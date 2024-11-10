@@ -57,3 +57,11 @@ func (s *AuthService) Register(req models.User) error {
 
 	return s.userRepo.Create(&req)
 }
+
+func (s *AuthService) GetMe(token string) (*models.User, error) {
+	id, err := utils.ValidateToken(token, s.jwtSecret)
+	if err != nil {
+		return nil, err
+	}
+	return s.userRepo.GetByID(id.UserID)
+}

@@ -147,27 +147,25 @@ func (h *AuthHandler) Register(c *gin.Context) {
 // @Summary      GetMe
 // @Description  Get current user
 // @Tags         auth
+// @Accept       json
+// @Param Authorization header string true "Authorization"
 // @Produce      json
 // @Success      200  {object}  models.User
 // @Failure      401  {object}  models.ErrorResponse
 // @Security     BearerAuth
 // @Router       /me [get]
 func (h *AuthHandler) GetMe(c *gin.Context) {
-	user, exists := c.Get("user")
-	if !exists {
-		c.JSON(http.StatusUnauthorized, models.ErrorResponse{Error: "no user found"})
+	token, exists := c.Get("token")
+    if !exists {
+        c.JSON(http.StatusUnauthorized, models.ErrorResponse{Error: "no token found"})
+        return
+    }
+
+	user, err := h.authService.GetMe(token.(string))
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, models.ErrorResponse{Error: err.Error()})
 		return
 	}
 
-	if err := h.validator.Struct(user); err != nil {
-		c.JSON(http.StatusBadRequest, models.ErrorResponse{Error: err.Error()})
-		return
-	}
-
-	if user.(models.User).ID == 0 {
-		c.JSON(http.StatusUnauthorized, models.ErrorResponse{Error: "no user found"})
-		return
-	}
-
-	c.JSON(http.StatusOK, user.(models.User))
+	c.JSON(http.StatusOK, user)
 }

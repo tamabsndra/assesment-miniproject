@@ -59,7 +59,7 @@ func main() {
 
     tokenService := services.NewTokenService(redisClient, cfg.TokenExpiry, cfg.JWTSecret)
     authService := services.NewAuthService(userRepo, cfg.JWTSecret)
-    postService := services.NewPostService(postRepo)
+    postService := services.NewPostService(postRepo, cfg.JWTSecret)
 
     authHandler := handlers.NewAuthHandler(authService, tokenService)
     postHandler := handlers.NewPostHandler(postService)
@@ -86,13 +86,15 @@ func main() {
             protected.GET("/posts", postHandler.GetAll)
 			protected.GET("/post-detail", postHandler.GetPostDetail)
             protected.GET("/posts/:id", postHandler.GetByID)
-			protected.GET("/posts/my/:id", postHandler.GetByUserID)
+			protected.GET("/posts/my", postHandler.GetByUserID)
 			protected.PUT("/posts/:id", postHandler.Update)
 			protected.DELETE("/posts/:id", postHandler.Delete)
         }
     }
 
     log.Printf("Server starting on port %s", cfg.ServerPort)
+    log.Printf("API documentation available at http://localhost:%s/swagger/index.html", cfg.ServerPort)
+
     if err := router.Run(":" + cfg.ServerPort); err != nil {
         log.Fatalf("Failed to start server: %v", err)
     }

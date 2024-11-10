@@ -212,7 +212,15 @@ paths:
       - auth
   /me:
     get:
+      consumes:
+      - application/json
       description: Get current user
+      parameters:
+      - description: Authorization
+        in: header
+        name: Authorization
+        required: true
+        type: string
       produces:
       - application/json
       responses:
@@ -416,7 +424,7 @@ paths:
       summary: Update post
       tags:
       - posts
-  /posts/user:
+  /posts/my:
     get:
       description: Get all posts of a user
       parameters:

@@ -115,10 +115,15 @@ func (h *PostHandler) GetByID(c *gin.Context) {
 // @Failure      401  {object}  models.ErrorResponse
 // @Failure      500  {object}  models.ErrorResponse
 // @Security     BearerAuth
-// @Router       /posts/user [get]
+// @Router       /posts/my [get]
 func (h *PostHandler) GetByUserID(c *gin.Context) {
-	userID := c.GetUint("userID")
-	posts, err := h.postService.GetByUserID(userID)
+	token, exists := c.Get("token")
+	if !exists {
+		c.JSON(http.StatusUnauthorized, models.ErrorResponse{Error: "no token found"})
+		return
+	}
+
+	posts, err := h.postService.GetByUserID(token.(string))
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, models.ErrorResponse{Error: err.Error()})
 		return

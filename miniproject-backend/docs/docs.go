@@ -124,6 +124,9 @@ const docTemplate = `{
                     }
                 ],
                 "description": "Get current user",
+                "consumes": [
+                    "application/json"
+                ],
                 "produces": [
                     "application/json"
                 ],
@@ -131,6 +134,15 @@ const docTemplate = `{
                     "auth"
                 ],
                 "summary": "GetMe",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Authorization",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -258,7 +270,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/posts/user": {
+        "/posts/my": {
             "get": {
                 "security": [
                     {

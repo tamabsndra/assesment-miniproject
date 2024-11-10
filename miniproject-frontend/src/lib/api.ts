@@ -91,7 +91,7 @@ export const postApi = {
   },
 
   getMyPosts: async (): Promise<Post[]> => {
-    const response = await api.get<Post[]>(`/posts/my/${storage.getUser()?.id}`)
+    const response = await api.get<Post[]>(`/posts/my`)
     return response.data
   },
 

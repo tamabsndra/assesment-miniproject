@@ -14,6 +14,27 @@ func NewUserRepository(db *sql.DB) *UserRepository {
 	return &UserRepository{db: db}
 }
 
+func (r *UserRepository) GetByID(id uint) (*models.User, error) {
+	user := &models.User{}
+	query := `
+		SELECT id, email, password, name, created_at, updated_at
+		FROM users
+		WHERE id = $1
+	`
+	err := r.db.QueryRow(query, id).Scan(
+		&user.ID,
+		&user.Email,
+		&user.Password,
+		&user.Name,
+		&user.CreatedAt,
+		&user.UpdatedAt,
+	)
+	if err != nil {
+		return nil, err
+	}
+	return user, nil
+}
+
 func (r *UserRepository) GetByEmail(email string) (*models.User, error) {
 	user := &models.User{}
 	query := `
