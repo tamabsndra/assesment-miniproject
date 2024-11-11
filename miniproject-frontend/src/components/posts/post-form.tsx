@@ -9,6 +9,7 @@ import { RadioGroup, RadioGroupItem } from '../ui/radio-group'
 import {
   Form,
   FormControl,
+  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -17,7 +18,8 @@ import {
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
-import { Label } from '@radix-ui/react-label'
+import { Label } from '@/components/ui/label'
+import { Switch } from '@/components/ui/switch'
 
 interface PostFormProps {
   initialData?: PostFormData
@@ -88,31 +90,20 @@ export function PostForm({ initialData, postId }: PostFormProps) {
             />
 
             <FormField
-                control={form.control}
-                name="is_published"
-                render={({ field }) => (
-                    <FormItem>
-                    <FormLabel>Is Published</FormLabel>
-                    <FormControl>
-                        <RadioGroup
-                        defaultValue={field.value ? "true" : "false"}
-                        onValueChange={(value) => field.onChange(value === "true")}
-                        value={field.value ? "true" : "false"}
-                        >
-                        <div className="flex items-center space-x-2">
-                            <RadioGroupItem value="false" id="draft" />
-                            <Label htmlFor="draft">Draft</Label>
-                        </div>
-                        <div className="flex items-center space-x-2">
-                            <RadioGroupItem value="true" id="published" />
-                            <Label htmlFor="published">Publish</Label>
-                        </div>
-                        </RadioGroup>
-                    </FormControl>
-                    <FormMessage />
-                    </FormItem>
-                )}
-                />
+              control={form.control}
+              name="is_published"
+              render={({ field }) => (
+                <FormItem>
+                  <FormControl>
+                    <div className="flex items-center space-x-2">
+                        <Switch id="is_published" checked={field.value} onCheckedChange={field.onChange} />
+                        <Label htmlFor="airplane-mode">Publish</Label>
+                    </div>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
             < Button
               type="submit"
