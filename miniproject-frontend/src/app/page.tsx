@@ -1,11 +1,11 @@
-"use client"
+
+import { authApi } from '@/lib/api'
 import { redirect } from 'next/navigation'
-import { isAuthenticated } from '@/lib/auth'
+
 
 export default async function HomePage() {
-  const session = await isAuthenticated
-
-  if (!session) {
+  const session = await authApi.verifyCookieToken()
+  if (session.isAuthenticated === false) {
     redirect('/login')
   } else {
     redirect('/dashboard')

@@ -12,25 +12,14 @@ import type {
   UpdatePostData,
   Post
 } from '@/types/post'
+import { getToken } from './utils'
+import Cookie from 'js-cookie'
 
 const api = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080/api',
-  headers: {
-    'Content-Type': 'application/json',
-  },
+  headers: { 'Content-Type': 'application/json' },
+  withCredentials: true,
 })
-
-// Request interceptor
-api.interceptors.request.use(
-  (config) => {
-    const token = storage.getToken()
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`
-    }
-    return config
-  },
-  (error) => Promise.reject(error)
-)
 
 // Response interceptor
 api.interceptors.response.use(
@@ -48,9 +37,6 @@ api.interceptors.response.use(
 export const authApi = {
   login: async (data: LoginRequest): Promise<AuthResponse> => {
     const response = await api.post<AuthResponse>('/login', data)
-    const { token, user } = response.data
-    storage.setToken(token)
-    storage.setUser(user)
     return response.data
   },
 
@@ -69,6 +55,11 @@ export const authApi = {
 
   getCurrentUser: async (): Promise<User> => {
     const response = await api.get<User>('/me')
+    return response.data
+  },
+
+  verifyCookieToken: async (): Promise<void> => {
+    const response = await api.get('/verify-cookie-token')
     return response.data
   },
 }

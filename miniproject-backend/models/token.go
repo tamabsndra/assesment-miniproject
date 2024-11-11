@@ -28,3 +28,10 @@ type TokenValidationResponse struct {
 type ValidateTokenRequest struct {
     Token string `json:"token" validate:"required"`
 }
+
+type VerifyCookieToken struct {
+	User VerifyUser `json:"user"`
+	Token string `json:"token"`
+	IsAuthenticated bool `json:"isAuthenticated"`
+	IsLoading bool `json:"isLoading"`
+}

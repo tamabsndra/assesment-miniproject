@@ -38,6 +38,7 @@ func (s *AuthService) Login(req models.LoginRequest) (*models.LoginResponse, err
 		return nil, err
 	}
 
+
 	user.Password = ""
 	return &models.LoginResponse{
 		Token: token,

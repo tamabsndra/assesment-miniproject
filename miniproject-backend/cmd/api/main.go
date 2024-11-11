@@ -75,6 +75,7 @@ func main() {
         api.POST("/login", authHandler.Login)
 		api.POST("/register", authHandler.Register)
 		api.POST("/validate-token", authHandler.ValidateToken)
+		api.GET("/verify-cookie-token", authHandler.VerifyCookieToken)
 
         protected := api.Group("")
         protected.Use(middleware.AuthMiddleware(cfg.JWTSecret, tokenService))

@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"net/http"
+	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/go-playground/validator/v10"
@@ -53,6 +54,8 @@ func (h *AuthHandler) Login(c *gin.Context) {
         return
     }
 
+    c.SetCookie("authToken", response.Token, int(24*time.Hour.Seconds()), "/", "", true, true)
+
     c.JSON(http.StatusOK, response)
 }
 
@@ -78,6 +81,8 @@ func (h *AuthHandler) Logout(c *gin.Context) {
         c.JSON(http.StatusInternalServerError, models.ErrorResponse{Error: "failed to logout"})
         return
     }
+
+    c.SetCookie("authToken", "", -1, "/", "", true, true)
 
     c.JSON(http.StatusOK, models.SuccessResponse{Message: "successfully logged out"})
 }
@@ -168,4 +173,48 @@ func (h *AuthHandler) GetMe(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, user)
+}
+
+func (h *AuthHandler) VerifyCookieToken(c *gin.Context) {
+    response := models.VerifyCookieToken{}
+    token, err := c.Cookie("authToken")
+
+    if err != nil {
+        response.IsAuthenticated = false
+        response.Token = ""
+        response.IsLoading = false
+        c.JSON(http.StatusOK, response)
+        return
+    }
+
+    _, err = h.tokenService.ValidateToken(token)
+    if err != nil {
+        response.IsAuthenticated = false
+        response.Token = ""
+        response.IsLoading = false
+        c.JSON(http.StatusOK, response)
+        return
+    }
+
+    user, err := h.authService.GetMe(token)
+    if err != nil {
+        response.IsAuthenticated = false
+        response.Token = ""
+        response.IsLoading = false
+        c.JSON(http.StatusOK, response)
+        return
+    }
+
+
+    response.User.ID = user.ID
+    response.User.Email = user.Email
+    response.User.Name = user.Name
+    response.User.CreatedAt = user.CreatedAt
+    response.User.UpdatedAt = user.UpdatedAt
+
+    response.Token = token
+    response.IsAuthenticated = true
+    response.IsLoading = false
+
+    c.JSON(http.StatusOK, response)
 }

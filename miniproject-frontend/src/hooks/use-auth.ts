@@ -20,6 +20,7 @@ export function useLogin() {
         user: response.user,
         token: response.token,
         isAuthenticated: true,
+        isLoading: false,
       })
       queryClient.invalidateQueries()
       toast({
@@ -70,7 +71,7 @@ export function useLogout() {
   return useMutation({
     mutationFn: authApi.logout,
     onSuccess: () => {
-      setAuth({ user: null, token: null, isAuthenticated: false })
+      setAuth({ user: null, token: null, isAuthenticated: false, isLoading: false })
       queryClient.clear()
       toast({
         title: "Success",
@@ -85,5 +86,12 @@ export function useLogout() {
         description: "Failed to logout",
       })
     },
+  })
+}
+
+export function useGetCurrentUser() {
+  return useQuery({
+    queryKey: ['user'],
+    queryFn: authApi.getCurrentUser,
   })
 }

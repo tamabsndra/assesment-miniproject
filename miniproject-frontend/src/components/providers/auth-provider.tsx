@@ -1,35 +1,73 @@
 'use client'
 
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { useAtom } from 'jotai'
 import { useRouter, usePathname } from 'next/navigation'
 import { authAtom } from '@/store/auth'
-import { storage } from '@/lib/storage'
+import { authApi } from '@/lib/api'
+import { LoadingSpinner } from '../layout/loading'
 
 const publicRoutes = ['/login', '/register']
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [auth, setAuth] = useAtom(authAtom)
+  const [isInitialized, setIsInitialized] = useState(false)
   const router = useRouter()
   const pathname = usePathname()
 
   useEffect(() => {
-    const token = storage.getToken()
-    const user = storage.getUser()
+    const initializeAuth = async () => {
+      if (isInitialized) return
 
-    if (token && user) {
-      setAuth({ token, user, isAuthenticated: true })
+      try {
+        const data = await authApi.verifyCookieToken()
+        if (data.isAuthenticated) {
+          setAuth(data)
+        }
+        else {
+          setAuth({
+            user: null,
+            token: null,
+            isAuthenticated: false,
+            isLoading: false,
+          })
 
-      if (publicRoutes.includes(pathname)){
-          router.push('/dashboard')
+        }
+      } catch (error) {
+        setAuth({
+          user: null,
+          token: null,
+          isAuthenticated: false,
+          isLoading: false,
+        })
+      } finally {
+        setIsInitialized(true)
       }
-
     }
 
-    if (!token && !user && !publicRoutes.includes(pathname)) {
-      router.push('/login')
-    }
-  }, [setAuth, router, pathname])
+    initializeAuth()
+  }, [setAuth, isInitialized])
 
-  return<>{children}</>
+  useEffect(() => {
+    if (!isInitialized) return
+
+    if (!auth.isAuthenticated && !publicRoutes.includes(pathname)) {
+      const returnUrl = encodeURIComponent(pathname)
+      router.push(`/login?returnUrl=${returnUrl}`)
+    }
+
+    if (auth.isAuthenticated && publicRoutes.includes(pathname)) {
+      router.push('/dashboard')
+    }
+  }, [auth.isAuthenticated, pathname, router, isInitialized])
+
+  if (!isInitialized || auth.isLoading) {
+    return (
+      <div className="flex justify-center min-h-screen">
+        <LoadingSpinner/>
+      </div>
+    )
+  }
+
+  return <>{children}</>
 }

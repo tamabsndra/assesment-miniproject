@@ -11,6 +11,14 @@ type User struct {
     UpdatedAt time.Time `json:"updated_at"`
 }
 
+type VerifyUser struct {
+	ID        uint      `json:"id"`
+	Email     string    `json:"email" validate:"required,email"`
+	Name      string    `json:"name" validate:"required"`
+	CreatedAt time.Time `json:"created_at"`
+	UpdatedAt time.Time `json:"updated_at"`
+}
+
 type UserInPost struct {
 	ID        uint      `json:"id"`
 	Email     string    `json:"email" validate:"required,email"`
