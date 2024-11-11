@@ -37,3 +37,10 @@ export interface RegisterResponse {
     created_at: string;
   };
 }
+
+export interface VerifyCookieTokenResponse {
+  isAuthenticated: boolean;
+  user: User;
+  token: string;
+  isLoading: boolean;
+}

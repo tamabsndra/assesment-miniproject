@@ -52,8 +52,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     if (!isInitialized) return
 
     if (!auth.isAuthenticated && !publicRoutes.includes(pathname)) {
-      const returnUrl = encodeURIComponent(pathname)
-      router.push(`/login?returnUrl=${returnUrl}`)
+      router.push(`/login`)
     }
 
     if (auth.isAuthenticated && publicRoutes.includes(pathname)) {

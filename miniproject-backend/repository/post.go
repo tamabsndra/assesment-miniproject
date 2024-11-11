@@ -16,8 +16,8 @@ func NewPostRepository(db *sql.DB) *PostRepository {
 
 func (r *PostRepository) Create(post *models.Post) (*models.Post, error) {
 	query := `
-        INSERT INTO posts (user_id, title, content, created_at, updated_at)
-        VALUES ($1, $2, $3, NOW(), NOW())
+        INSERT INTO posts (user_id, title, content, is_published, created_at, updated_at)
+        VALUES ($1, $2, $3, $4, NOW(), NOW())
         RETURNING id, created_at, updated_at
     `
 	err := r.db.QueryRow(
@@ -25,6 +25,7 @@ func (r *PostRepository) Create(post *models.Post) (*models.Post, error) {
 		post.UserID,
 		post.Title,
 		post.Content,
+		post.IsPublished,
 	).Scan(&post.ID, &post.CreatedAt, &post.UpdatedAt)
 
 	if err != nil {
@@ -35,7 +36,7 @@ func (r *PostRepository) Create(post *models.Post) (*models.Post, error) {
 
 func (r *PostRepository) GetAll() ([]models.Post, error) {
 	query := `
-        SELECT id, user_id, title, content, created_at, updated_at
+        SELECT id, user_id, title, content, is_published, created_at, updated_at
         FROM posts
         ORDER BY created_at DESC
     `
@@ -53,6 +54,7 @@ func (r *PostRepository) GetAll() ([]models.Post, error) {
 			&post.UserID,
 			&post.Title,
 			&post.Content,
+			&post.IsPublished,
 			&post.CreatedAt,
 			&post.UpdatedAt,
 		)
@@ -67,15 +69,15 @@ func (r *PostRepository) GetAll() ([]models.Post, error) {
 func (r *PostRepository) GetByID(id uint) (*models.Post, error) {
 	post := &models.Post{}
 	query := `
-        SELECT id, user_id, title, content, created_at, updated_at
-        FROM posts
-        WHERE id = $1
+		SELECT id, user_id, title, content, is_published, created_at, updated_at
+		FROM posts WHERE id = $1
     `
 	err := r.db.QueryRow(query, id).Scan(
 		&post.ID,
 		&post.UserID,
 		&post.Title,
 		&post.Content,
+		&post.IsPublished,
 		&post.CreatedAt,
 		&post.UpdatedAt,
 	)
@@ -87,7 +89,7 @@ func (r *PostRepository) GetByID(id uint) (*models.Post, error) {
 
 func (r *PostRepository) GetByUserID(userID uint) ([]models.Post, error) {
 	query := `
-		SELECT id, user_id, title, content, created_at, updated_at
+		SELECT id, user_id, title, content, is_published, created_at, updated_at
 		FROM posts
 		WHERE user_id = $1
 		ORDER BY created_at DESC
@@ -106,6 +108,7 @@ func (r *PostRepository) GetByUserID(userID uint) ([]models.Post, error) {
 			&post.UserID,
 			&post.Title,
 			&post.Content,
+			&post.IsPublished,
 			&post.CreatedAt,
 			&post.UpdatedAt,
 		)
@@ -121,20 +124,22 @@ func (r *PostRepository) Update(id uint, req models.UpdatePostRequest) (*models.
 	post := &models.Post{}
 	query := `
 		UPDATE posts
-		SET title = $1, content = $2, updated_at = NOW()
-		WHERE id = $3
-		RETURNING id, user_id, title, content, created_at, updated_at
+		SET title = $1, content = $2, is_published = $3, updated_at = NOW()
+		WHERE id = $4
+		RETURNING id, user_id, title, content, is_published, created_at, updated_at
 	`
 	err := r.db.QueryRow(
 		query,
 		req.Title,
 		req.Content,
+		req.IsPublished,
 		id,
 	).Scan(
 		&post.ID,
 		&post.UserID,
 		&post.Title,
 		&post.Content,
+		&post.IsPublished,
 		&post.CreatedAt,
 		&post.UpdatedAt,
 	)
@@ -151,7 +156,7 @@ func (r *PostRepository) Delete(id uint) error {
 
 func (r *PostRepository) GetPostDetail() ([]models.PostWithUser, error) {
 	query := `
-		SELECT p.id, p.user_id, p.title, p.content, p.created_at, p.updated_at, u.id, u.name, u.email
+		SELECT p.id, p.user_id, p.title, p.content, p.is_published, p.created_at, p.updated_at, u.id, u.name, u.email
 		FROM posts p
 		JOIN users u ON p.user_id = u.id
 		ORDER BY p.created_at DESC
@@ -170,6 +175,7 @@ func (r *PostRepository) GetPostDetail() ([]models.PostWithUser, error) {
 			&post.UserID,
 			&post.Title,
 			&post.Content,
+			&post.IsPublished,
 			&post.CreatedAt,
 			&post.UpdatedAt,
 			&post.User.ID,

@@ -20,7 +20,7 @@ import { Card, CardHeader, CardTitle, CardContent, CardFooter } from '@/componen
 import { Icons } from '@/components/ui/icons'
 
 export function LoginForm() {
-  const { mutate: login, isLoading } = useLogin()
+  const { mutate: login, isPending: isLoading } = useLogin()
 
   const form = useForm<LoginRequest>({
     resolver: zodResolver(loginSchema),

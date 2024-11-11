@@ -23,6 +23,7 @@ func (s *PostService) Create(userID uint, req models.CreatePostRequest) (*models
 		UserID:  userID,
 		Title:   req.Title,
 		Content: req.Content,
+		IsPublished: req.IsPublished,
 	}
 
 	return s.postRepo.Create(post)

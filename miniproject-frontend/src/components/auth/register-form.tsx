@@ -27,7 +27,7 @@ import {
 import { Icons } from '@/components/ui/icons'
 
 export function RegisterForm() {
-  const { mutate: register, isLoading } = useRegister()
+  const { mutate: register, isPending: isLoading } = useRegister()
 
   const form = useForm<RegisterRequest>({
     resolver: zodResolver(registerSchema),

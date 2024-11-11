@@ -6,8 +6,12 @@ import { ErrorDisplay } from '@/components/layout/error'
 import { PostForm } from '@/components/posts/post-form'
 import { use } from 'react';
 
-export default function EditPostPage({ params }: { params: { id: string } }) {
-  const resolvedParams = use(params);
+type Params = {
+  id: string;
+}
+
+export default function EditPostPage({ params }: { params: Params }) {
+  const resolvedParams : Params = use(params as any);
   const { data: post, isLoading, error } = useGetPost(Number(resolvedParams.id));
 
   if (isLoading) return <PageLoader />

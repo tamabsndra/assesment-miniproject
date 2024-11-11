@@ -1,5 +1,6 @@
 import axios from 'axios'
 import type {
+  VerifyCookieTokenResponse,
   LoginRequest,
   RegisterRequest,
   AuthResponse,
@@ -9,7 +10,8 @@ import type {
 import type {
   CreatePostData,
   UpdatePostData,
-  Post
+  Post,
+  PostWithAuthor
 } from '@/types/post'
 
 const api = axios.create({
@@ -49,8 +51,8 @@ export const authApi = {
     return response.data
   },
 
-  verifyCookieToken: async (): Promise<void> => {
-    const response = await api.get('/verify-cookie-token')
+  verifyCookieToken: async (): Promise<VerifyCookieTokenResponse> => {
+    const response = await api.get<VerifyCookieTokenResponse>('/verify-cookie-token')
     return response.data
   },
 }
@@ -61,8 +63,8 @@ export const postApi = {
     return response.data
   },
 
-  getWithUser: async (): Promise<Post[]> => {
-    const response = await api.get<Post[]>('/post-detail')
+  getWithUser: async (): Promise<PostWithAuthor[]> => {
+    const response = await api.get<PostWithAuthor[]>('/post-detail')
     return response.data
   },
 

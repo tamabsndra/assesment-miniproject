@@ -7,6 +7,7 @@ export const PostSchema = z.object({
   content: z.string()
     .min(10, 'Content must be at least 10 characters')
     .max(5000, 'Content must be less than 5000 characters'),
+  is_published: z.boolean(),
 })
 
 export type PostFormData = z.infer<typeof PostSchema>

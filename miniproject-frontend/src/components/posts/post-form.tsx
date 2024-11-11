@@ -5,6 +5,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { PostSchema, PostFormData } from '@/validations/post'
 import { useCreatePost, useUpdatePost } from '@/hooks/use-posts'
 import { Button } from '@/components/ui/button'
+import { RadioGroup, RadioGroupItem } from '../ui/radio-group'
 import {
   Form,
   FormControl,
@@ -16,21 +17,23 @@ import {
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
+import { Label } from '@radix-ui/react-label'
 
 interface PostFormProps {
   initialData?: PostFormData
-  postId?: string
+  postId?: Number
 }
 
 export function PostForm({ initialData, postId }: PostFormProps) {
-  const { mutate: createPost, isLoading: isCreating } = useCreatePost()
-  const { mutate: updatePost, isLoading: isUpdating } = useUpdatePost(postId || '')
+  const { mutate: createPost, isPending: isCreating } = useCreatePost()
+  const { mutate: updatePost, isPending: isUpdating } = useUpdatePost(Number(postId || ''))
 
   const form = useForm<PostFormData>({
     resolver: zodResolver(PostSchema),
     defaultValues: initialData || {
       title: '',
       content: '',
+      is_published: false,
     },
   })
 
@@ -84,7 +87,34 @@ export function PostForm({ initialData, postId }: PostFormProps) {
               )}
             />
 
-            <Button
+            <FormField
+                control={form.control}
+                name="is_published"
+                render={({ field }) => (
+                    <FormItem>
+                    <FormLabel>Is Published</FormLabel>
+                    <FormControl>
+                        <RadioGroup
+                        defaultValue={field.value ? "true" : "false"}
+                        onValueChange={(value) => field.onChange(value === "true")}
+                        value={field.value ? "true" : "false"}
+                        >
+                        <div className="flex items-center space-x-2">
+                            <RadioGroupItem value="false" id="draft" />
+                            <Label htmlFor="draft">Draft</Label>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                            <RadioGroupItem value="true" id="published" />
+                            <Label htmlFor="published">Publish</Label>
+                        </div>
+                        </RadioGroup>
+                    </FormControl>
+                    <FormMessage />
+                    </FormItem>
+                )}
+                />
+
+            < Button
               type="submit"
               className="w-full"
               disabled={isLoading}

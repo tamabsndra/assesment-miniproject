@@ -84,8 +84,12 @@ export function PostList() {
           </CardHeader>
           <CardContent>
             <p className="text-gray-600">{post.content}</p>
+
             <div className="mt-2 text-sm text-gray-500">
               Created at: {new Date(post.created_at).toLocaleDateString()}
+            </div>
+            <div className="mt-2 text-sm text-gray-500">
+              Status: {post.is_published ? 'Published' : 'Draft'}
             </div>
           </CardContent>
         </Card>

@@ -23,7 +23,7 @@ interface PostCardProps {
 }
 
 export function PostCard({ post, showFullContent = false }: PostCardProps) {
-  const { mutate: deletePost, isLoading: isDeleting } = useDeletePost()
+  const { mutate: deletePost, isPending: isDeleting } = useDeletePost()
 
   const content = showFullContent
     ? post.content
