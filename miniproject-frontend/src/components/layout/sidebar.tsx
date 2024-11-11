@@ -6,7 +6,6 @@ import { cn } from '@/lib/utils'
 import {
   LayoutDashboard,
   FileText,
-  Settings,
   PlusCircle,
 } from 'lucide-react'
 

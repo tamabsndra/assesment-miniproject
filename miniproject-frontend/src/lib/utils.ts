@@ -1,6 +1,5 @@
 import { type ClassValue, clsx } from "clsx"
 import { twMerge } from "tailwind-merge"
-import Cookies from 'js-cookie'
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
@@ -17,17 +16,4 @@ export function formatDate(date: string) {
 export function truncateText(text: string, length: number) {
   if (text.length <= length) return text
   return text.slice(0, length) + '...'
-}
-
-export function getToken() {
-  return Cookies.get('token')
-}
-
-export function removeToken() {
-  Cookies.remove('token')
-  Cookies.remove('authToken')
-}
-
-export function setToken() {
-  
 }

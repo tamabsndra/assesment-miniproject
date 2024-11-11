@@ -12,5 +12,5 @@ export const authAtom = atom<AuthState>({
   user: null,
   token: null,
   isAuthenticated: false,
-  isLoading: true,  // Start with loading true
+  isLoading: true,
 })

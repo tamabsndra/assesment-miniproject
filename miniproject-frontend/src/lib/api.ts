@@ -1,5 +1,6 @@
 import axios from 'axios'
-import { storage } from './storage'
+import { useAtom } from 'jotai'
+import { authAtom } from '@/store/auth'
 import type {
   LoginRequest,
   RegisterRequest,
@@ -12,8 +13,6 @@ import type {
   UpdatePostData,
   Post
 } from '@/types/post'
-import { getToken } from './utils'
-import Cookie from 'js-cookie'
 
 const api = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080/api',
@@ -21,19 +20,16 @@ const api = axios.create({
   withCredentials: true,
 })
 
-// Response interceptor
 api.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response?.status === 401) {
-      storage.clear()
       window.location.href = '/login'
     }
     return Promise.reject(error)
   }
 )
 
-// Auth endpoints
 export const authApi = {
   login: async (data: LoginRequest): Promise<AuthResponse> => {
     const response = await api.post<AuthResponse>('/login', data)
@@ -46,11 +42,8 @@ export const authApi = {
   },
 
   logout: async (): Promise<void> => {
-    try {
-      await api.post('/logout')
-    } finally {
-      storage.clear()
-    }
+    const response = await api.post('/logout')
+    return response.data
   },
 
   getCurrentUser: async (): Promise<User> => {
@@ -64,7 +57,6 @@ export const authApi = {
   },
 }
 
-// Post endpoints
 export const postApi = {
   getAll: async (): Promise<Post[]> => {
     const response = await api.get<Post[]>('/posts')
