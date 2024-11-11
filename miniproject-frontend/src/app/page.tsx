@@ -1,4 +1,3 @@
-
 import { authApi } from '@/lib/api'
 import { redirect } from 'next/navigation'
 

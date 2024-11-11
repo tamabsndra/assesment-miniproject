@@ -1,4 +1,3 @@
-// components/auth/register-form.tsx
 'use client'
 
 import { useForm } from 'react-hook-form'
@@ -108,7 +107,7 @@ export function RegisterForm() {
               )}
             />
 
-            
+
 
             <Button
               type="submit"

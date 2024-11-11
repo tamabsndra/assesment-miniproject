@@ -1,4 +1,3 @@
-// components/posts/post-card.tsx
 import Link from 'next/link'
 import { useDeletePost } from '@/hooks/use-posts'
 import { formatDate } from '@/lib/utils'

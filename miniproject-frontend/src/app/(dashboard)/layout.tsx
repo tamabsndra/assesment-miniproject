@@ -1,5 +1,3 @@
-import { redirect } from 'next/navigation'
-import { isAuthenticated } from '@/lib/auth'
 import {Header} from '@/components/layout/header'
 import {Sidebar} from '@/components/layout/sidebar'
 

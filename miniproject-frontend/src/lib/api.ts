@@ -1,6 +1,4 @@
 import axios from 'axios'
-import { useAtom } from 'jotai'
-import { authAtom } from '@/store/auth'
 import type {
   LoginRequest,
   RegisterRequest,
