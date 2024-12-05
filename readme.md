@@ -2,7 +2,7 @@
 
 ## Project Overview
 
-Assessment-Miniproject is a full-stack web application built with a Next.js frontend and a Go backend. This project allows users to register, log in, and manage posts. With essential CRUD functionality, it provides a practical example of a full-stack application, connecting frontend and backend technologies seamlessly.
+Simple POST Management is a full-stack web application built with a Next.js frontend and a Go backend. This project allows users to register, log in, and manage posts. With essential CRUD functionality, it provides a practical example of a full-stack application, connecting frontend and backend technologies seamlessly.
 
 ## Features
 
